@@ -14,7 +14,9 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build -o main .
+RUN go build -o /cmd/main ./cmd
+
+EXPOSE 8080
 
 # Command to run the executable
-CMD ["./main"]
+CMD ["/cmd/main"]

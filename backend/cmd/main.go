@@ -26,5 +26,5 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 	if message == "" {
 		message = "No message!"
 	}
-	w.Write([]byte("Echo:" + message))
+	w.Write([]byte("Echo: " + message))
 }
