@@ -10,17 +10,17 @@ import (
 var secret_key = []byte("secret_key")
 
 func CreateToken(username string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256,
-		jwt.MapClaims{
-			"username": username,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
-		})
+	claims := jwt.MapClaims{
+		"username": username,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(), 
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	token_string, err := token.SignedString(secret_key)
 	if err != nil {
-		return "", nil
+		return "", err 
 	}
-
 	return token_string, nil
 }
 

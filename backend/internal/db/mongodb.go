@@ -3,13 +3,13 @@ package db
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var connection_string string = "mongodb://localhost:27017"
 var db_name string = "null"
 
 const max_pool_size = 50
@@ -20,7 +20,7 @@ var database *mongo.Database
 
 func init() {
 	var err error
-	client, err := connect()
+	client, err := Connect()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,19 +28,19 @@ func init() {
 	database = client.Database(db_name)
 }
 
-func connect() (*mongo.Client, error) {
-	clientOption := options.Client().ApplyURI(connection_string)
+func Connect() (*mongo.Client, error) {
+	uri := os.Getenv("MONGO_URI") 
+	if uri == "" {
+		uri = "mongodb://localhost:27017"
+	}
+	
+	clientOption := options.Client().ApplyURI(uri)
     clientOption = clientOption.SetMaxPoolSize(max_pool_size)
 
     ctx, cancel := context.WithTimeout(context.Background(), timeout_second*time.Second)
     defer cancel()
 
     client, err := mongo.Connect(ctx, clientOption)
-    if err != nil {
-        return nil, err
-    }
-
-    err = client.Ping(ctx, nil)
     if err != nil {
         return nil, err
     }

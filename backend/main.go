@@ -4,24 +4,26 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/raditsoic/null/internal/db"
 	"github.com/raditsoic/null/internal/db/handlers"
 )
 
 func main() {
+	_, err := db.Connect() 
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+
 	server := http.NewServeMux()
 	server.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("This is root!"))
 	})
-	server.HandleFunc("GET /api/hello", Hello)
 	server.HandleFunc("GET /api/echo", Echo)
 	server.HandleFunc("POST /api/register", handlers.RegisterHandler)
+	server.HandleFunc("POST /api/login", handlers.LoginHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", server))
 	log.Println("Server starting on :8080")
-}
-
-func Hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, World!"))
+	log.Fatal(http.ListenAndServe(":8080", server))
 }
 
 func Echo(w http.ResponseWriter, r *http.Request) {
@@ -31,4 +33,3 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte("Echo: " + message))
 }
-

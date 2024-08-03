@@ -15,19 +15,19 @@ func init() {
 	user_collection = db.GetCollection("users")
 }
 
-func GetUserbyUsername(username string) (*models.User, error) {
-	var user models.User
-	filter := bson.D{{Key: "Name", Value: username}}
+func GetUserByName(name string) (*models.User, error) {
+    var user models.User
+    filter := bson.D{{Key: "name", Value: name}}
 
-	err := user_collection.FindOne(context.TODO(), filter).Decode(&user)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil
-		}
-		return nil, err
-	}
+    err := user_collection.FindOne(context.TODO(), filter).Decode(&user)
+    if err != nil {
+        if err == mongo.ErrNoDocuments {
+            return nil, nil
+        }
+        return nil, err
+    }
 
-	return &user, nil
+    return &user, nil
 }
 
 func CreateUser(user *models.User) (*mongo.InsertOneResult, error) {
