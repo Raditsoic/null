@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/raditsoic/null/internal/db/handlers"
 )
 
 func main() {
@@ -12,9 +14,10 @@ func main() {
 	})
 	server.HandleFunc("GET /api/hello", Hello)
 	server.HandleFunc("GET /api/echo", Echo)
+	server.HandleFunc("POST /api/register", handlers.RegisterHandler)
 
-	log.Println("Server starting on :8080")
 	log.Fatal(http.ListenAndServe(":8080", server))
+	log.Println("Server starting on :8080")
 }
 
 func Hello(w http.ResponseWriter, r *http.Request) {
@@ -28,3 +31,4 @@ func Echo(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write([]byte("Echo: " + message))
 }
+

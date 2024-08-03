@@ -15,19 +15,42 @@ var db_name string = "null"
 const max_pool_size = 50
 const timeout_second = 30
 
-func connect() (*mongo.Database, error) {
-	client_option := options.Client().ApplyURI(connection_string)
-	client_option = client_option.SetMaxPoolSize(max_pool_size)
+var client *mongo.Client
+var database *mongo.Database
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout_second*time.Second)
-	defer cancel()
-
-	client, err := mongo.Connect(ctx, client_option)
+func init() {
+	var err error
+	client, err := connect()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return client.Database(db_name), nil
+	database = client.Database(db_name)
+}
+
+func connect() (*mongo.Client, error) {
+	clientOption := options.Client().ApplyURI(connection_string)
+    clientOption = clientOption.SetMaxPoolSize(max_pool_size)
+
+    ctx, cancel := context.WithTimeout(context.Background(), timeout_second*time.Second)
+    defer cancel()
+
+    client, err := mongo.Connect(ctx, clientOption)
+    if err != nil {
+        return nil, err
+    }
+
+    err = client.Ping(ctx, nil)
+    if err != nil {
+        return nil, err
+    }
+
+    log.Println("Connected to MongoDB")
+    return client, nil
+}
+
+func GetCollection(collection_name string) *mongo.Collection {
+	return database.Collection(collection_name)
 }
 
 
