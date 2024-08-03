@@ -31,7 +31,7 @@ func init() {
 func Connect() (*mongo.Client, error) {
 	uri := os.Getenv("MONGO_URI") 
 	if uri == "" {
-		uri = "mongodb://localhost:27017"
+		log.Fatal("MONGO_URI not set")
 	}
 	
 	clientOption := options.Client().ApplyURI(uri)
