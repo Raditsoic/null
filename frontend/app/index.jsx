@@ -5,7 +5,6 @@ import { Link } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CustomButton } from '../components';
-import { icons } from '../constants';
 import { images } from '../constants';
 
 export default function App() {
